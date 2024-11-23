@@ -1,11 +1,18 @@
 
 // src/components/MainSection.js
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import phoneImage from '../assets/phone-mockup.png';
 
 function MainSection() {
+
+  const navigate = useNavigate();
+
+  const handleLogin = () =>  navigate("/login"); // Navigate to Login Page
+  
+
+
   return (
     <div style={{ background: 'linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)' }} className="min-h-screen">
       {/* Header Section */}
@@ -15,7 +22,7 @@ function MainSection() {
         <Link to="/about" className="hover:underline">Home</Link>
         <Link to="/about" className="hover:underline">About us</Link>
         <Link to="/about" className="hover:underline">Contact us</Link>
-          <button className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
+          <button onClick={handleLogin} className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
             Log in / Sign in
           </button>
         </nav>

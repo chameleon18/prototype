@@ -7,6 +7,8 @@ import MainSection from './components/MainSection';
 import AboutUs from './components/AboutUs'; // Import the About Us component
 import HowItWorks from './components/HowItWorks';
 import Footer from './components/Footer';
+import Loginpage from './components/Loginpage';
+import Signpage from './components/Signup';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           
           {/* About Us page route */}
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/login" element={<Loginpage/>} />
+          <Route path="/signup" element={<Signpage/>} />
         </Routes>
       </div>
     </Router>
