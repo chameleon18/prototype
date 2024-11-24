@@ -26,7 +26,7 @@ const LoginPage = () => {
       console.log("Login successful:", data);
       alert("Login successful! Welcome!");
       // Redirect or perform other actions upon successful login
-      navigate("/main");
+      navigate("/");
     } catch (err) {
       console.error("Unexpected error during login:", err);
     }
