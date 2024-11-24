@@ -41,7 +41,7 @@ function AboutUs() {
         <nav className="flex items-center space-x-4">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About us</Link>
-          <Link to="/contact" className="hover:underline">Contact us</Link>
+          <Link to="/contactus" className="hover:underline">Contact us</Link>
 
           {user ? (
             <button className="bg-green-500 py-2 px-4 rounded">
