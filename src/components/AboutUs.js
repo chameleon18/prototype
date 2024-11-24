@@ -1,13 +1,38 @@
 // src/components/AboutUs.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import aboutImage1 from '../assets/aboutus/1img.svg';
 import aboutImage2 from '../assets/aboutus/mission.svg';
 import aboutImage3 from '../assets/aboutus/goal.svg';
 import aboutImage4 from '../assets/aboutus/objec.png';
+import { supabase } from "../supabaseClient";
 
 function AboutUs() {
+
+  const navigate = useNavigate();
+
+  const handleLogin = () =>  navigate("/login");
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("username")
+          .eq("email", sessionData.session.user.email)
+          .single();
+
+        setUser(userData);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Custom Header for About Us Page */}
@@ -17,9 +42,17 @@ function AboutUs() {
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About us</Link>
           <Link to="/contact" className="hover:underline">Contact us</Link>
-          <button className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
+
+          {user ? (
+            <button className="bg-green-500 py-2 px-4 rounded">
+            {user.username}
+          </button>
+          ) : (
+            <button onClick={handleLogin} className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
             Log in / Sign in
           </button>
+          )
+          }
         </nav>
       </header>
 
