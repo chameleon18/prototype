@@ -61,7 +61,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-white">
       <header className="flex justify-between items-center p-5 bg-gradient-to-b from-green-300 to-green-500 text-white">
-        <img src={logoimg} alt="Chameleon Logo" className="h-12" />
+        <img src={logo} alt="Chameleon Logo" className="h-12" />
         <nav className="flex items-center space-x-4">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About us</Link>
