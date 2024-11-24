@@ -9,6 +9,7 @@ import HowItWorks from './components/HowItWorks';
 import Footer from './components/Footer';
 import Loginpage from './components/Loginpage';
 import Signpage from './components/Signup';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           
           {/* About Us page route */}
           <Route path="/about" element={<AboutUs />} />
+          <Route path='/contactus' element={<Contact/>} />
           <Route path="/login" element={<Loginpage/>} />
           <Route path="/signup" element={<Signpage/>} />
         </Routes>
