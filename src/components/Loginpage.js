@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { supabase } from "../supabaseClient"; // Import your Supabase client
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'; 
 
 const LoginPage = () => {
   // State to hold email and password
@@ -33,18 +34,34 @@ const LoginPage = () => {
   };
 
   return (
+
     <div
       style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }}
-      className="min-h-screen flex items-center justify-center "
+      className="min-h-screen  "
     >
-      <div className="w-full max-w-4xl p-8 space-y-6 bg-blue-100 border-2 border-blue-300 rounded-3xl mt-5 mb-5">
-  <div className="flex space-x-8">
-    {/* Left Column */}
-    <div className="flex-1 flex items-center justify-center">
-      <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
-    </div>
-    <div className="text-center text-3xl font-bold text-black mb-4">
-      <h2 className="text-center text-3xl font-bold text-black mb-4">Log In</h2>
+
+
+    
+      <header className="flex justify-between items-center p-5 text-white">
+        <img src={logo} alt="Chameleon Logo" className="h-12" />
+        <nav className="flex items-center space-x-4">
+        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/about" className="hover:underline">About us</Link>
+        <Link to="/contactus" className="hover:underline">Contact us</Link>
+        </nav>
+      </header>
+      
+
+
+    <section className="min-h-screen flex items-center justify-center">
+      <div className="w-full  max-w-4xl p-8 space-y-6 bg-blue-100 border-2 border-blue-300 rounded-3xl mt-5 mb-5">
+     <div className="flex space-x-8">
+      {/* Left Column */}
+      <div className="flex-1 flex items-center justify-center">
+        <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
+      </div>
+      <div className="text-center text-3xl font-bold text-black mb-4">
+        <h2 className="text-center text-3xl font-bold text-black mb-4">Log In</h2>
       <form
         className="space-y-4"
         onSubmit={(e) => {
@@ -107,6 +124,7 @@ const LoginPage = () => {
     </div>
   </div>
 </div>
+</section>
 
     </div>
   );
