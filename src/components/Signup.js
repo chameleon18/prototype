@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import logo from '../assets/logo.png';
 import { supabase } from '../supabaseClient'; // Import your Supabase client
@@ -13,6 +14,8 @@ const Signup = () => {
 
     const handleSignUp = async () => {
         try {
+
+
           // Step 1: Sign up user with email and password
           const { data, error } = await supabase.auth.signUp({
             email,

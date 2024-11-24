@@ -1,9 +1,11 @@
 
 // src/components/MainSection.js
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import phoneImage from '../assets/phone-mockup.png';
+import { supabase } from "../supabaseClient";
+
 
 function MainSection() {
 
@@ -11,6 +13,24 @@ function MainSection() {
 
   const handleLogin = () =>  navigate("/login"); // Navigate to Login Page
   
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("username")
+          .eq("email", sessionData.session.user.email)
+          .single();
+
+        setUser(userData);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
 
   return (
@@ -22,9 +42,17 @@ function MainSection() {
         <Link to="/about" className="hover:underline">Home</Link>
         <Link to="/about" className="hover:underline">About us</Link>
         <Link to="/about" className="hover:underline">Contact us</Link>
-          <button onClick={handleLogin} className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
+          {user ? (
+            <button className="bg-green-500 py-2 px-4 rounded">
+            {user.username}
+          </button>
+          ) : (
+            <button onClick={handleLogin} className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
             Log in / Sign in
           </button>
+          )
+          }
+          
         </nav>
       </header>
 

@@ -17,7 +17,8 @@ function App() {
         
         <Routes>
           {/* Main page (Home) route */}
-          <Route path="/" element={<><MainSection /><HowItWorks /><Footer /></>} />
+          <Route path="/main" element={<><MainSection /></>}/>
+          <Route path="/" element={<><HowItWorks /><Footer /></>} />
           
           {/* About Us page route */}
           <Route path="/about" element={<AboutUs />} />
