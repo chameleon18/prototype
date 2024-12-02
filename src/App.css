@@ -50,12 +50,12 @@
 }
 
 .logo {
-  height: 50px;
+  height: 70px;
 }
 
 .nav a, .login-button {
   margin-left: 20px;
-  color: #333;
+  color: #2e2a2a;
   text-decoration: none;
 }
 

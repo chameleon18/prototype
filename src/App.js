@@ -10,22 +10,30 @@ import Footer from './components/Footer';
 import Loginpage from './components/Loginpage';
 import Signpage from './components/Signup';
 import Contact from './components/Contact';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import Home from './components/Home';
+
 
 function App() {
   return (
     <Router>
       <div className="App">
-        
+        <Header/>
         <Routes>
           {/* Main page (Home) route */}
-          <Route path="/" element={<><MainSection /><HowItWorks /><Footer /></>} />
+          <Route path="/" element={<><MainSection /><HowItWorks /></>} />
           
           {/* About Us page route */}
           <Route path="/about" element={<AboutUs />} />
           <Route path='/contactus' element={<Contact/>} />
           <Route path="/login" element={<Loginpage/>} />
           <Route path="/signup" element={<Signpage/>} />
+
+          <Route path='/main' element={<><Hero/><Home/></> }></Route>
         </Routes>
+        
+        <Footer/>
       </div>
     </Router>
   );
