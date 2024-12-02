@@ -34,7 +34,7 @@ function Header() {
     fetchUser();
   }, []);
   return (
-    <header className="flex justify-between items-center p-5 text-white bg-gradient-to-r from-primary to-primary-light">
+    <header style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }} className="flex justify-between items-center p-5 text-white from-primary to-primary-light">
         <img src={logo} alt="Chameleon Logo" className="h-12" />
         <nav className="flex items-center space-x-4">
           <Link to="/" className="hover:underline text-white">

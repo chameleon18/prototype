@@ -36,25 +36,7 @@ function AboutUs() {
   return (
     <div className="min-h-screen bg-white">
       {/* Custom Header for About Us Page */}
-      <header className="flex justify-between items-center p-5 bg-gradient-to-b from-green-300 to-green-500 text-white">
-        <img src={logo} alt="Chameleon Logo" className="h-12" />
-        <nav className="flex items-center space-x-4">
-          <Link to="/" className="hover:underline">Home</Link>
-          <Link to="/about" className="hover:underline">About us</Link>
-          <Link to="/contactus" className="hover:underline">Contact us</Link>
 
-          {user ? (
-            <button className="bg-green-500 py-2 px-4 rounded">
-            {user.username}
-          </button>
-          ) : (
-            <button onClick={handleLogin} className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition">
-            Log in / Sign in
-          </button>
-          )
-          }
-        </nav>
-      </header>
 
       {/* About Us Content */}
       <div className="py-10 px-5 md:px-20 lg:px-32 text-gray-800">

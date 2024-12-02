@@ -13,9 +13,9 @@ function MainSection() {
 
   return (
     <div className="min-h-screen bg-neutral-background text-neutral-text">
-      <section className="flex flex-col items-center py-16">
+      <section style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }}  className="flex flex-col items-center py-16">
         {/* Main Section with Phone Mockups */}
-        <h1 className="text-4xl font-bold text-primary-dark mb-8 animate-bounce">
+        <h1 className="text-4xl font-bold text-grey-900 mb-8 animate-bounce">
           Compare before you order
         </h1>
         <div className="relative flex justify-center items-center space-x-4 mb-8">
@@ -27,7 +27,7 @@ function MainSection() {
         </div>
         <button
           onClick={handleGetStarted} // Bind the onClick handler to the button
-          className="px-6 py-3 mt-4 bg-primary text-white rounded-full hover:bg-primary-light transition"
+          className="px-6 py-3 mt-4 bg-green-500 text-white rounded-full hover:bg-green-700 transition"
         >
           Get Started
         </button>

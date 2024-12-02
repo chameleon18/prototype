@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 import emailjs from "emailjs-com";
 import { supabase } from "../supabaseClient";
+import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Contact = () => {
   const form = useRef();
 
   const sendEmail = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
 
+    // Send the form data to EmailJS service
     emailjs
       .sendForm(
         "service_hhc87zc", // Replace with your EmailJS service ID
         "template_zz8rdyh", // Replace with your EmailJS template ID
-        form.current,
+        form.current, // The form ref (form.current) contains the form data
         "OwQFIsLMewuU4Zhh2" // Replace with your EmailJS public key
       )
       .then(
@@ -32,7 +33,7 @@ const Contact = () => {
   };
 
   const navigate = useNavigate();
-
+  
   const handleLogin = () => navigate("/login");
 
   const [user, setUser] = useState(null);
@@ -56,105 +57,104 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="flex justify-between items-center p-5 bg-gradient-to-b from-green-300 to-green-500 text-white">
-        <img src={logo} alt="Chameleon Logo" className="h-12" />
-        <nav className="flex items-center space-x-4">
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>
-          <Link to="/about" className="hover:underline">
-            About us
-          </Link>
-          <Link to="/contactus" className="hover:underline">
-            Contact us
-          </Link>
-
-          {user ? (
-            <button className="bg-green-500 py-2 px-4 rounded">
-              {user.username}
-            </button>
-          ) : (
-            <button
-              onClick={handleLogin}
-              className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-500 transition"
-            >
-              Log in / Sign in
-            </button>
-          )}
-        </nav>
-      </header>
-
-      <div className="bg-blue-300 py-12 px-6 sm:px-8">
-        <div className="max-w-4xl mx-auto bg-blue-200 p-8 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-semibold text-[#333333] mb-6">
-            Contact Us
+      <div style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }} 
+       className=" py-12 px-6 sm:px-8">
+        <div className="max-w-4xl mx-auto bg-gray-800 border-2 border-gray-300 p-8 rounded-lg shadow-lg">
+          {/* Logo */}
+          <div className="flex-1 flex items-center justify-center">
+            <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
+          </div>
+          <h2 className="text-3xl font-semibold text-green-500 mb-6 text-center">
+            Let's Chat, Reach Out to Us
           </h2>
+          <p className="text-xl text-white text-center mb-8">
+            Have questions or feedback? We're here to help. Send us a message, and we'll respond within 24 hours.
+          </p>
           <form
-            ref={form}
-            onSubmit={sendEmail}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            ref={form} // Reference to the form
+            onSubmit={sendEmail} // Call the sendEmail function when the form is submitted
+            className="space-y-8"
           >
-            <div className="space-y-4">
+            {/* Name Inputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div>
                 <label
-                  htmlFor="name"
-                  className="block text-start text-2xl pl-2 font-medium text-[#333333]"
+                  htmlFor="firstName"
+                  className="block text-start text-xl font-medium text-white "
                 >
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  className="mt-2 p-3 w-full border border-[#78A860] rounded-3xl focus:ring-[#A7D189] focus:outline-none"
-                  placeholder="Enter your name"
+                  id="firstName"
+                  name="firstName"
+                  className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                  placeholder="Enter your first name"
                   required
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="email"
-                  className="block text-start text-2xl pl-2 font-medium text-[#333333]"
+                  htmlFor="lastName"
+                  className="block text-start text-xl font-medium text-white "
                 >
-                  Email Address
+                  Last Name
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="mt-2 p-3 w-full border border-[#78A860] rounded-3xl focus:ring-[#A7D189] focus:outline-none"
-                  placeholder="Enter your email"
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                  placeholder="Enter your last name"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-start text-2xl pl-2 font-medium text-[#333333]"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="4"
-                  className="mt-2 p-3 w-full border border-[#78A860] rounded-3xl focus:ring-[#A7D189] focus:outline-none"
-                  placeholder="Your message here"
-                  required
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-green-500 text-white font-semibold py-3 rounded-3xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[#78A860]"
+            {/* Email Input */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-start text-xl font-medium text-white "
               >
-                Send Message
-              </button>
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                placeholder="Enter your email"
+                required
+              />
             </div>
+
+            {/* Message Textarea */}
+            <div>
+              <label
+                htmlFor="message"
+                className="block text-start text-xl font-medium text-white "
+              >
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="4"
+                className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                placeholder="Your message here"
+                required
+              ></textarea>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[#78A860]"
+            >
+              Send Message
+            </button>
           </form>
         </div>
       </div>
