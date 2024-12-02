@@ -3,7 +3,7 @@ import { supabase } from "../supabaseClient"; // Import your configured Supabase
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [foodItems, setFoodItems] = useState([]); // Food items fetched from Supabase
+  const [menuItems, setMenuItems] = useState([]); // Menu items fetched from Supabase
   const [restaurants, setRestaurants] = useState([]); // Restaurants fetched from Supabase
   const [loading, setLoading] = useState(true); // Loading state
 
@@ -12,21 +12,13 @@ const Home = () => {
       try {
         setLoading(true);
 
-        // Fetch restaurants
-        const { data: restaurantData, error: restaurantError } = await supabase
-          .from("restaurants")
-          .select("*"); // Fetch all restaurants
+        // Fetch menu items
+        const { data: menuData, error: menuError } = await supabase
+          .from("menu_items")
+          .select("*"); // Fetch all menu items
 
-        if (restaurantError) throw restaurantError;
-        setRestaurants(restaurantData);
-
-        // Fetch food items
-        const { data: foodData, error: foodError } = await supabase
-          .from("food_items")
-          .select("*, restaurant_name"); // Include restaurant_name directly
-
-        if (foodError) throw foodError;
-        setFoodItems(foodData);
+        if (menuError) throw menuError;
+        setMenuItems(menuData);
 
         setLoading(false);
       } catch (error) {
@@ -41,13 +33,11 @@ const Home = () => {
     setSearchQuery(query);
   };
 
-  const filteredFoodItems = foodItems.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.dish_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredRestaurants = restaurants.filter((restaurant) =>
-    restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
@@ -58,26 +48,19 @@ const Home = () => {
       <h1 className="text-2xl font-bold mb-4 text-center">Foodie Finder</h1>
       <SearchBar onSearch={handleSearch} />
       <div className="mt-4">
-        <h2 className="text-xl font-semibold mb-2">Food Items</h2>
+        <h2 className="text-xl font-semibold mb-2">Menu Items</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredFoodItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <FoodCard
               key={item.id}
-              name={item.name}
-              description={item.description}
-              restaurant={item.restaurant_name || "Unknown Restaurant"}
-            />
-          ))}
-        </div>
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-2">Restaurants</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredRestaurants.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.name} // Use `name` as the key since it's the primary key
-              name={restaurant.name}
-              location={restaurant.city}
+              dishName={item.dish_name}
+              category={item.category}
+              priceOriginal={item.price_original}
+              priceZomato={item.price_zomato}
+              priceSwiggy={item.price_swiggy}
+              priceOwnWebsite={item.price_own_website}
+              additionalDetails={item.additional_details}
+              restaurant={item.hostel_name || "Unknown Restaurant"}
             />
           ))}
         </div>
@@ -107,23 +90,33 @@ const SearchBar = ({ onSearch }) => {
   );
 };
 
-const FoodCard = ({ name, description, restaurant }) => {
+const FoodCard = ({
+  dishName,
+  category,
+  priceOriginal,
+  priceZomato,
+  priceSwiggy,
+  priceOwnWebsite,
+  additionalDetails,
+  restaurant,
+}) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-4">
-      <h3 className="text-lg font-bold">{name}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
-      <p className="text-sm text-gray-500 mt-2">Restaurant: {restaurant}</p>
+      <h3 className="text-lg font-bold">{dishName}</h3>
+      <p className="text-sm text-gray-600">{category}</p>
+      <p className="text-sm text-gray-600 mt-2">Restaurant: {restaurant}</p>
+      <div className="mt-4">
+        <p className="text-sm text-gray-600">Price (Original): ₹{priceOriginal}</p>
+        {priceZomato && <p className="text-sm text-gray-600">Price (Zomato): ₹{priceZomato}</p>}
+        {priceSwiggy && <p className="text-sm text-gray-600">Price (Swiggy): ₹{priceSwiggy}</p>}
+        {priceOwnWebsite && <p className="text-sm text-gray-600">Price (Own Website): ₹{priceOwnWebsite}</p>}
+      </div>
+      {additionalDetails && (
+        <p className="text-sm text-gray-600 mt-2">{additionalDetails}</p>
+      )}
     </div>
   );
 };
 
-const RestaurantCard = ({ name, location }) => {
-  return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <h3 className="text-lg font-bold">{name}</h3>
-      <p className="text-sm text-gray-600">Location: {location}</p>
-    </div>
-  );
-};
 
 export default Home;
