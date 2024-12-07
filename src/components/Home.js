@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import Axios for API calls
 import { supabase } from "../supabaseClient"; // Import your configured Supabase client
 
-const PEXELS_API_KEY = "YBfp1u2PodBsrhjtHgVksnrvDSMPe64jXtTgYgLnp0cz3bPwftdBJIg4"; // Your Pexels API key
+const DEFAULT_IMAGE_URL = "https://via.placeholder.com/150"; // Placeholder image URL
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuItems, setMenuItems] = useState([]); // Menu items fetched from Supabase
   const [loading, setLoading] = useState(true); // Loading state
+  const [selectedDish, setSelectedDish] = useState(null); // State to store the selected dish for comparison
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Fetch menu items
+        // Fetch menu items from Supabase
         const { data: menuData, error: menuError } = await supabase
           .from("menu_items")
           .select("*"); // Fetch all menu items
@@ -44,6 +44,14 @@ const Home = () => {
     item.dish_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleCompareClick = (dish) => {
+    setSelectedDish(dish); // Set the selected dish for comparison
+  };
+
+  const closeComparison = () => {
+    setSelectedDish(null); // Close the comparison
+  };
+
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
@@ -52,7 +60,7 @@ const Home = () => {
     <div className="min-h-screen bg-gray-100 p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Foodie Finder</h1>
       <SearchBar onSearch={handleSearch} />
-      
+
       {/* Restaurant Cards */}
       <div className="mt-4">
         <h2 className="text-xl font-semibold mb-2">Restaurants</h2>
@@ -61,7 +69,9 @@ const Home = () => {
             <RestaurantCard
               key={index}
               name={restaurantName}
-              menuItems={menuItems.filter(item => item.hostel_name === restaurantName)} // Filter menu items by restaurant name
+              menuItems={menuItems.filter(
+                (item) => item.hostel_name === restaurantName
+              )} // Filter menu items by restaurant name
             />
           ))}
         </div>
@@ -82,10 +92,40 @@ const Home = () => {
               priceOwnWebsite={item.price_own_website}
               additionalDetails={item.additional_details}
               restaurant={item.hostel_name || "Unknown Restaurant"}
+              imageUrl={item.image_url || DEFAULT_IMAGE_URL} // Use the image_url from Supabase
+              onCompareClick={handleCompareClick} // Pass the compare click handler
             />
           ))}
         </div>
       </div>
+
+      {/* Comparison Modal */}
+      {selectedDish && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+            <h3 className="text-xl font-bold mb-4">Compare Prices for {selectedDish.dish_name}</h3>
+            <p className="mb-2">Restaurant: {selectedDish.hostel_name || "Unknown"}</p>
+            <div className="mb-4">
+              <p className="text-sm text-gray-600">Original Price: ₹{selectedDish.price_original}</p>
+              {selectedDish.price_zomato && (
+                <p className="text-sm text-gray-600">Zomato Price: ₹{selectedDish.price_zomato}</p>
+              )}
+              {selectedDish.price_swiggy && (
+                <p className="text-sm text-gray-600">Swiggy Price: ₹{selectedDish.price_swiggy}</p>
+              )}
+              {selectedDish.price_own_website && (
+                <p className="text-sm text-gray-600">Own Website Price: ₹{selectedDish.price_own_website}</p>
+              )}
+            </div>
+            <button
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+              onClick={closeComparison}
+            >
+              Close Comparison
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -112,51 +152,17 @@ const SearchBar = ({ onSearch }) => {
 };
 
 const RestaurantCard = ({ name, menuItems }) => {
-  const [imageUrl, setImageUrl] = useState(null);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.pexels.com/v1/search?query=${name}`,
-          {
-            headers: {
-              Authorization: PEXELS_API_KEY,
-            },
-          }
-        );
-
-        // Get the first image from the response
-        const images = response.data.photos;
-        if (images.length > 0) {
-          setImageUrl(images[0].src.medium);
-        } else {
-          setImageUrl(null); // No image found
-        }
-      } catch (error) {
-        console.error("Error fetching image:", error);
-        setImageUrl(null);
-      }
-    };
-
-    fetchImage();
-  }, [name]);
+  const imageUrl = menuItems[0]?.image_url || DEFAULT_IMAGE_URL; // Use the image_url of the first item, fallback to default
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4">
       {/* Image Section */}
       <div className="w-full h-40 bg-gray-200 rounded-t-lg overflow-hidden">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No Image Available
-          </div>
-        )}
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Content Section */}
@@ -175,58 +181,18 @@ const FoodCard = ({
   priceOwnWebsite,
   additionalDetails,
   restaurant,
+  imageUrl,
+  onCompareClick, // Added compare click handler
 }) => {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [showComparison, setShowComparison] = useState(false);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.pexels.com/v1/search?query=${dishName}`,
-          {
-            headers: {
-              Authorization: PEXELS_API_KEY,
-            },
-          }
-        );
-
-        const images = response.data.photos;
-        if (images.length >= 1) {
-          setImageUrl(images[1].src.medium);
-        } else if (images.length > 0) {
-          setImageUrl(images[0].src.medium); // Fallback to the first image if less than 3 images
-        } else {
-          setImageUrl(null); // No image found
-        }
-      } catch (error) {
-        console.error("Error fetching image:", error);
-        setImageUrl(null);
-      }
-    };
-
-    fetchImage();
-  }, [dishName]);
-
-  const toggleComparison = () => {
-    setShowComparison((prev) => !prev);
-  };
-
   return (
     <div className="bg-white shadow-md rounded-lg p-4 relative">
       {/* Image Section */}
       <div className="w-full h-40 bg-gray-200 rounded-t-lg overflow-hidden">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={dishName}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No Image Available
-          </div>
-        )}
+        <img
+          src={imageUrl}
+          alt={dishName}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Content Section */}
@@ -240,23 +206,13 @@ const FoodCard = ({
         {additionalDetails && (
           <p className="text-sm text-gray-600 mt-2">{additionalDetails}</p>
         )}
+        <button
+          className="mt-4 bg-green-500 text-white p-2 rounded-full hover:bg-green-600"
+          onClick={() => onCompareClick({ dishName, hostel_name: restaurant, price_original: priceOriginal, price_zomato: priceZomato, price_swiggy: priceSwiggy, price_own_website: priceOwnWebsite })}
+        >
+          Compare Prices
+        </button>
       </div>
-
-      {/* Comparison Section */}
-      <button
-        className="absolute bottom-4 right-4 bg-green-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-600 focus:outline-none"
-        onClick={toggleComparison}
-      >
-        {showComparison ? "Hide Compare" : "Compare"}
-      </button>
-
-      {showComparison && (
-        <div className="mt-4 bg-gray-100 p-2 rounded-md">
-          <p className="text-sm text-gray-600">Price (Zomato): ₹{priceZomato || "N/A"}</p>
-          <p className="text-sm text-gray-600">Price (Swiggy): ₹{priceSwiggy || "N/A"}</p>
-          <p className="text-sm text-gray-600">Price (Original): ₹{priceOriginal || "N/A"}</p>
-        </div>
-      )}
     </div>
   );
 };

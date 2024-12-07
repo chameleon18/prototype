@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 
+// Importing components
 import MainSection from './components/MainSection';
 import AboutUs from './components/AboutUs'; // Import the About Us component
 import HowItWorks from './components/HowItWorks';
@@ -14,27 +15,30 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Home from './components/Home';
 
+// Importing UserProvider
+import { UserProvider } from './components/UserContext'; // UserProvider for shared authentication state
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        
-        <Routes>
-          {/* Main page (Home) route */}
-          <Route path="/" element={<><Header/><MainSection /><HowItWorks /><Footer/></>} />
-          
-          {/* About Us page route */}
-          <Route path="/about" element={<><Header/><AboutUs /></>} />
-          <Route path='/contactus' element={<><Header/><Contact/></>} />
-          <Route path="/login" element={<Loginpage/>} />
-          <Route path="/signup" element={<Signpage/>} />
+    <UserProvider>  {/* Wrap the entire app with UserProvider */}
+      <Router>
+        <div className="App">
+          <Routes>
+            {/* Main page (Home) route */}
+            <Route path="/" element={<><Header/><MainSection /><HowItWorks /><Footer/></>} />
+            
+            {/* About Us page route */}
+            <Route path="/about" element={<><Header/><AboutUs /></>} />
+            <Route path='/contactus' element={<><Header/><Contact/></>} />
+            <Route path="/login" element={<Loginpage/>} />
+            <Route path="/signup" element={<Signpage/>} />
 
-          <Route path='/main' element={<><Header/><Hero/><Home/><Footer/></> }></Route>
-        </Routes>
-        
-      </div>
-    </Router>
+            {/* Main section and hero section */}
+            <Route path='/main' element={<><Header/><Hero/><Home/><Footer/></> } />
+          </Routes>
+        </div>
+      </Router>
+    </UserProvider>  
   );
 }
 
