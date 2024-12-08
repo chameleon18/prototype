@@ -58,8 +58,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-white">
       <div style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }} 
-       className=" py-12 px-6 sm:px-8">
-        <div className="max-w-4xl mx-auto bg-gray-800 border-2 border-gray-300 p-8 rounded-lg shadow-lg">
+       className=" py-12 px-6 sm:px-8 ">
+        <div className="max-w-4xl mx-auto bg-gray-200 bg-opacity-70 border-2 border-gray-300 p-8 rounded-3xl shadow-lg">
           {/* Logo */}
           <div className="flex-1 flex items-center justify-center">
             <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
@@ -67,7 +67,7 @@ const Contact = () => {
           <h2 className="text-3xl font-semibold text-green-500 mb-6 text-center">
             Let's Chat, Reach Out to Us
           </h2>
-          <p className="text-xl text-white text-center mb-8">
+          <p className="text-xl text-grey-900 text-center mb-8">
             Have questions or feedback? We're here to help. Send us a message, and we'll respond within 24 hours.
           </p>
           <form
@@ -80,7 +80,7 @@ const Contact = () => {
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-start text-xl font-medium text-white "
+                  className="block text-start text-xl font-medium text-grey-900 "
                 >
                   First Name
                 </label>
@@ -88,7 +88,7 @@ const Contact = () => {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                  className="mt-2 p-3 w-full border border-[#ccc] rounded-xl focus:ring-[#5cb85c] focus:outline-none"
                   placeholder="Enter your first name"
                   required
                 />
@@ -97,7 +97,7 @@ const Contact = () => {
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-start text-xl font-medium text-white "
+                  className="block text-start text-xl font-medium text-grey-900 "
                 >
                   Last Name
                 </label>
@@ -105,7 +105,7 @@ const Contact = () => {
                   type="text"
                   id="lastName"
                   name="lastName"
-                  className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                  className="mt-2 p-3 w-full border border-[#ccc] rounded-xl focus:ring-[#5cb85c] focus:outline-none"
                   placeholder="Enter your last name"
                   required
                 />
@@ -116,7 +116,7 @@ const Contact = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-start text-xl font-medium text-white "
+                className="block text-start text-xl font-medium text-grey-900 "
               >
                 Email Address
               </label>
@@ -124,7 +124,7 @@ const Contact = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                className="mt-2 p-3 w-full border border-[#ccc] rounded-xl focus:ring-[#5cb85c] focus:outline-none"
                 placeholder="Enter your email"
                 required
               />
@@ -134,7 +134,7 @@ const Contact = () => {
             <div>
               <label
                 htmlFor="message"
-                className="block text-start text-xl font-medium text-white "
+                className="block text-start text-xl font-medium text-grey-900 "
               >
                 Message
               </label>
@@ -142,7 +142,7 @@ const Contact = () => {
                 id="message"
                 name="message"
                 rows="4"
-                className="mt-2 p-3 w-full border border-[#ccc] rounded-lg focus:ring-[#5cb85c] focus:outline-none"
+                className="mt-2 p-3 w-full border border-[#ccc] rounded-xl focus:ring-[#5cb85c] focus:outline-none"
                 placeholder="Your message here"
                 required
               ></textarea>
@@ -151,7 +151,7 @@ const Contact = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[#78A860]"
+              className="w-full bg-green-500 text-white font-semibold py-3 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[#78A860]"
             >
               Send Message
             </button>

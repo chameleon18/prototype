@@ -25,7 +25,7 @@ function App() {
         <div className="App">
           <Routes>
             {/* Main page (Home) route */}
-            <Route path="/" element={<><Header/><MainSection /><HowItWorks /><Footer/></>} />
+            <Route path="/" element={<><Header/><MainSection /><HowItWorks /><AboutUs/><Footer/></>} />
             
             {/* About Us page route */}
             <Route path="/about" element={<><Header/><AboutUs /></>} />

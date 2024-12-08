@@ -70,12 +70,12 @@ const Signup = () => {
         </nav>
       </header>
       <section className="min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-lg p-8 space-y-6 bg-gray-800 border-2 border-gray-300 rounded-3xl mt-5 mb-5">
+        <div className="w-full max-w-lg p-8 space-y-6 bg-gray-300 bg-opacity-70 border-2 border-gray-300 rounded-3xl mt-5 mb-5">
         <div className="flex-1 flex items-center justify-center">
         <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
       </div>
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">Create an Account</h2>
+            <h2 className="text-3xl font-bold text-grey-900 mb-6">Create an Account</h2>
           </div>
           <form
             className="space-y-4"
@@ -86,63 +86,63 @@ const Signup = () => {
           >
             {/* Username */}
             <div>
-              <label className="block text-start text-xl font-bold text-white">Username</label>
+              <label className="block text-start text-xl font-bold text-grey-900">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
-                className="w-full px-4 py-2 mt-1 border rounded bg-gray-800 text-white"
+                className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
                 required
               />
             </div>
             <div className="flex space-x-4">
               {/* First Name */}
               <div className="w-1/2">
-                <label className="block text-start text-xl font-bold text-white">First Name</label>
+                <label className="block text-start text-xl font-bold text-grey-900">First Name</label>
                 <input
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="First name"
-                  className="w-full px-4 py-2 mt-1 border rounded bg-gray-800 text-white"
+                  className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
                   required
                 />
               </div>
               {/* Last Name */}
               <div className="w-1/2">
-                <label className="block text-start text-xl font-bold text-white">Last Name</label>
+                <label className="block text-start text-xl font-bold text-grey-900">Last Name</label>
                 <input
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last name"
-                  className="w-full px-4 py-2 mt-1 border rounded bg-gray-800 text-white"
+                  className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
                   required
                 />
               </div>
             </div>
             {/* Email */}
             <div>
-              <label className="block text-start text-xl font-bold text-white">Email</label>
+              <label className="block text-start text-xl font-bold text-grey-900">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className="w-full px-4 py-2 mt-1 border rounded bg-gray-800 text-white"
+                className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
                 required
               />
             </div>
             {/* Password */}
             <div>
-              <label className="block text-start text-xl font-bold text-white">Password</label>
+              <label className="block text-start text-xl font-bold text-grey-900">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full px-4 py-2 mt-1 border rounded bg-gray-800 text-white"
+                className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
                 required
               />
             </div>
@@ -154,9 +154,9 @@ const Signup = () => {
                 onChange={() => setAgreeTerms(!agreeTerms)}
                 className="mr-2"
               />
-              <span className="text-white">
+              <span className="text-grey-900">
                 I agree to the{" "}
-                <a href="#" className="text-blue-400 underline">
+                <a href="#" className="text-blue-800 underline">
                   Terms & Conditions
                 </a>
               </span>
@@ -169,17 +169,14 @@ const Signup = () => {
               Create account
             </button>
           </form>
-          <div className="text-sm text-center text-white mt-4">
+          <div className="text-sm text-center text-grey-900 mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-400 underline">
+            <Link to="/login" className="text-blue-800 underline">
               Log in
             </Link>
           </div>
           {/* Social Buttons */}
           <div className="flex items-center justify-center mt-6">
-            <button className="px-4 py-2 text-white bg-red-600 rounded-full">
-              <i className="fab fa-google"></i> Google
-            </button>
           </div>
         </div>
       </section>
