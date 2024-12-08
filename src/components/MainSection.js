@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../components/UserContext"; // Correctly import useUser
-import { supabase } from "../supabaseClient";
 import phoneImage from "../assets/phone-mockup.png";
 
 function MainSection() {
@@ -29,8 +28,9 @@ function MainSection() {
           Compare before you order
         </h1>
         <div className="relative flex justify-center items-center space-x-4 mb-8">
-          <img src={phoneImage} alt="App mockup" className="w-1/ max-w-xs" />
+          <img src={phoneImage} alt="App mockup" className="w-full max-w-m" />
         </div>
+
         <button
           onClick={handleGetStarted}
           className={`px-6 py-3 mt-4 ${

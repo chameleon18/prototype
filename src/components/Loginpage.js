@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
-import { supabase } from "../supabaseClient"; // Import your Supabase client
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { supabase } from "../supabaseClient";
+import { useNavigate, Link } from "react-router-dom";
 
-const LoginPage = () => {
-  // State to hold email and password
+const LoginPage = ({ closeLogin }) => {
+  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const navigate = useNavigate();
 
-  // Login function
+  // Reset form state
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+    setUsername("");
+    setAgreeTerms(false);
+  };
+
+  // Handle login functionality
   const handleLogin = async () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -20,87 +29,211 @@ const LoginPage = () => {
 
       if (error) {
         console.error("Error logging in:", error.message);
-        alert("Login failed: " + error.message); // Display error message to user
+        alert("Login failed: " + error.message);
         return;
       }
 
       console.log("Login successful:", data);
       alert("Login successful! Welcome!");
-      // Redirect or perform other actions upon successful login
+
+       // Close the login form after successful login
+       closeLogin();
+
+      // Reset form after successful login
+      resetForm();
+
+      // Redirect to home page or dashboard
       navigate("/");
     } catch (err) {
       console.error("Unexpected error during login:", err);
     }
   };
 
+  // Handle signup functionality
+  const handleSignUp = async () => {
+    if (!agreeTerms) {
+      alert("Please agree to the Terms & Conditions");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        if (error.message.includes("User already registered")) {
+          alert("User already registered. Please log in.");
+        } else {
+          alert(`Error signing up: ${error.message}`);
+        }
+        console.error("Error signing up:", error.message);
+        return;
+      }
+
+      console.log("Sign-up successful:", data);
+
+      const { error: insertError } = await supabase.from("users").insert([
+        {
+          username,
+          email,
+          password,
+        },
+      ]);
+
+      if (insertError) {
+        console.error("Error inserting user data:", insertError.message);
+        alert(`Error saving user data: ${insertError.message}`);
+      } else {
+        console.log("User details inserted successfully");
+        alert("Account created successfully!");
+
+        // Reset form after successful signup
+        resetForm();
+
+        // Optionally toggle back to login view
+        setIsLogin(true);
+
+        // Redirect to home page or dashboard
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Unexpected error during sign-up:", err);
+      alert("Unexpected error occurred. Please try again.");
+    }
+  };
+
   return (
-    <div style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }} className="min-h-screen">
-      {/* Custom Header for About Us Page */}
-      <header style={{ background: "linear-gradient(135deg, #6DECBF, #40C1AB, #0A8F96)" }} className="flex justify-between items-center p-5  to-green-500 text-white">
-        <img src={logo} alt="Chameleon Logo" className="h-12" />
-        <nav className="flex items-center space-x-4">
-          <Link to="/" className="hover:underline">Home</Link>
-          <Link to="/about" className="hover:underline">About us</Link>
-          <Link to="/contactus" className="hover:underline">Contact us</Link>
-        </nav>
-      </header>
-      <section className="min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-lg p-8 space-y-6 bg-gray-300 bg-opacity-70 border-2 border-gray-300 rounded-3xl mt-5 mb-5  shadow-lg">
-          {/* Logo */}
-          <div className="flex-1 flex items-center justify-center">
-            <img src={logo} alt="Chameleon Logo" className="h-30 rounded-full" />
-          </div>
-          
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-grey-900 mb-6">Log In</h2>
-          </div>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent form submission from refreshing the page
-              handleLogin(); // Call the handleLogin function
-            }}
-          >
-            {/* Email */}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className=" p-8 rounded-lg max-w-md w-full">
+      <button 
+        onClick={closeLogin} 
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+        ✕
+      </button>
+        <div className="flex justify-center mb-6">
+          <img src={logo} alt="Chameleon Logo" className="h-13" />
+        </div>
+
+        {/* Title and Toggle between Login and Signup */}
+        <h4 className="text-center text-2xl font-extrabold text-gray-900">
+          {isLogin ? "Log In" : "Sign Up"}
+        </h4>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          {isLogin ? (
+            <>
+              Don't have an account?{" "}
+              <span
+                onClick={() => setIsLogin(false)}
+                className="font-medium text-green-600 hover:text-green-500 cursor-pointer"
+              >
+                Sign Up
+              </span>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <span
+                onClick={() => setIsLogin(true)}
+                className="font-medium text-green-600 hover:text-green-500 cursor-pointer"
+              >
+                Log In
+              </span>
+            </>
+          )}
+        </p>
+
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (isLogin) {
+              handleLogin();
+            } else {
+              handleSignUp();
+            }
+          }}
+        >
+          <div className="rounded-md shadow-sm -space-y-px">
+            {/* Common Fields */}
             <div>
-              <label className="block text-start text-xl font-bold text-grey-900">Email</label>
+              <label className="block text-start text-xl font-bold text-black">
+                Email
+              </label>
               <input
-                type="Email"
+                type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} // Update email state
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
+                className="w-full px-4 py-2 mt-1 border text-black rounded-xl bg-gray-100"
                 required
               />
             </div>
-            {/* Password */}
             <div>
-              <label className="block text-start text-xl font-bold text-grey-900">Password</label>
+              <label className="block text-start text-xl font-bold text-black">
+                Password
+              </label>
               <input
-                type="Password"
+                type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} // Update password state
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full px-4 py-2 mt-1 border rounded-xl bg-gray-100 text-white"
+                className="w-full px-4 py-2 mt-1 border text-black rounded-xl bg-gray-100"
                 required
               />
             </div>
-            {/* Log In Button */}
+
+            {/* Signup Specific Fields */}
+            {!isLogin && (
+              <>
+                <div>
+                  <label className="block text-start text-xl font-bold text-gray-900">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Username"
+                    className="w-full px-4 py-2 mt-1 border  rounded-xl bg-gray-100 text-gray-900"
+                    required
+                  />
+                </div>
+
+                {/* Terms & Conditions */}
+                <div className="flex items-center pt-4">
+                  <input
+                    type="checkbox"
+                    checked={agreeTerms}
+                    onChange={() => setAgreeTerms(!agreeTerms)}
+                    className="h-4 w-4 text-green-600 border-gray-300 rounded"
+                    required
+                  />
+                  <label className="ml-2 block text-sm text-gray-900">
+                    <span className="text-grey-900">
+                      I agree to the{" "}
+                      <a href="#" className="text-green-600 underline">
+                        Terms & Conditions
+                      </a>
+                    </span>
+                  </label>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <div>
             <button
               type="submit"
               className="w-full py-3 mt-4 text-lg font-bold text-white bg-green-600 rounded-3xl hover:bg-green-800 focus:outline-none"
             >
-              Log In
+              {isLogin ? "Log In" : "Sign Up"}
             </button>
-          </form>
-          <div className="text-sm text-center text-grey-900 mt-4">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-800 underline">
-              Sign Up
-            </Link>
           </div>
-        </div>
-      </section>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { useUser } from "../components/UserContext"; // Correctly import useUser
-import { FaUserCircle } from "react-icons/fa"; // Import the profile icon from react-icons
+import { useUser } from "../components/UserContext"; 
+import { FaUserCircle } from "react-icons/fa"; 
 import logo from "../assets/logo.png";
+import LoginPage from './Loginpage'; // Import the LoginPage component
 
 function Header() {
   const navigate = useNavigate();
-  const { user, setUser } = useUser(); // Use the useUser hook to get user data
+  const { user, setUser } = useUser();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoginVisible, setIsLoginVisible] = useState(false); // State to show/hide the login form
 
-  const [showDropdown, setShowDropdown] = useState(false); // State for dropdown visibility
-
-  const handleLogin = () => navigate("/login");
-  const handleSignUp = () => navigate("/signup");
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -70,16 +69,10 @@ function Header() {
               ) : (
                 <div className="flex flex-col space-y-2">
                   <button
-                    onClick={handleLogin}
+                    onClick={() => setIsLoginVisible(true)} // Show the login form
                     className="w-full text-left hover:bg-gray-100 py-2 px-2 rounded"
                   >
                     Log in
-                  </button>
-                  <button
-                    onClick={handleSignUp}
-                    className="w-full text-left hover:bg-gray-100 py-2 px-2 rounded"
-                  >
-                    Sign up
                   </button>
                 </div>
               )}
@@ -87,6 +80,15 @@ function Header() {
           )}
         </div>
       </nav>
+
+      {/* Login form slide-in */}
+      {isLoginVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-white transition-transform transform translate-x-0 shadow-lg">
+            <LoginPage closeLogin={() => setIsLoginVisible(false)} />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -9,7 +9,7 @@ import AboutUs from './components/AboutUs'; // Import the About Us component
 import HowItWorks from './components/HowItWorks';
 import Footer from './components/Footer';
 import Loginpage from './components/Loginpage';
-import Signpage from './components/Signup';
+
 import Contact from './components/Contact';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -31,7 +31,6 @@ function App() {
             <Route path="/about" element={<><Header/><AboutUs /></>} />
             <Route path='/contactus' element={<><Header/><Contact/></>} />
             <Route path="/login" element={<Loginpage/>} />
-            <Route path="/signup" element={<Signpage/>} />
 
             {/* Main section and hero section */}
             <Route path='/main' element={<><Header/><Hero/><Home/><Footer/></> } />
