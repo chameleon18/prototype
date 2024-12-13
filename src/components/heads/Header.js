@@ -1,22 +1,37 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../supabaseClient";
-import { useUser } from "../components/UserContext"; 
-import { FaUserCircle } from "react-icons/fa"; 
-import logo from "../assets/logo.png";
-import LoginPage from './Loginpage'; // Import the LoginPage component
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import { useUser } from "../UserContext"; 
+import { FaUserCircle, FaShoppingCart } from "react-icons/fa"; // Import cart icon
+import logo from "../../assets/logo.png";
+import LoginPage from '../Loginpage'; // Import the LoginPage component
+import { useCart } from "../CartContext"; 
 
 function Header() {
   const navigate = useNavigate();
-  const { user, setUser } = useUser();
+  const { user, setUser } = useUser(); // Access user context
+  const { cartItems } = useCart() || {}; // Access cart context with fallback to empty object
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoginVisible, setIsLoginVisible] = useState(false); // State to show/hide the login form
+  const location = useLocation(); // Access the current route
 
+  // Handle logout
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
-    navigate("/");
+    setUser(null); // Clear user state
+    navigate("/"); // Navigate to home page
   };
+
+  // Fetch user when the component mounts
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: user } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user); // Set user state when logged in
+      }
+    };
+    fetchUser();
+  }, [setUser]);
 
   return (
     <header
@@ -37,6 +52,18 @@ function Header() {
           Contact us
         </Link>
 
+        {/* Conditionally render Cart Button only on /main route */}
+        {location.pathname === "/main" && (
+          <Link to="/cart" className="flex items-center space-x-2 bg-primary-dark py-2 px-4 rounded text-white relative">
+            <FaShoppingCart size={20} /> {/* Cart Icon */}
+            {cartItems && cartItems.length > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-2">
+                {cartItems.length}
+              </span>
+            )}
+          </Link>
+        )}
+
         {/* User Dropdown */}
         <div className="relative">
           <button
@@ -46,9 +73,7 @@ function Header() {
             <FaUserCircle size={20} /> {/* Profile Icon */}
             <span>{user ? user.username : "Log in / Sign in"}</span>
             <span
-              className={`ml-2 transform transition-transform duration-200 ${
-                showDropdown ? "rotate-180" : "rotate-0"
-              }`}
+              className={`ml-2 transform transition-transform duration-200 ${showDropdown ? "rotate-180" : "rotate-0"}`}
             >
               ▼
             </span>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "../supabaseClient"; // Import your configured Supabase client
-import RingLoaderComponent from "./RingLoader"; // Import RingLoaderComponent for loading animation
+import { supabase } from "../../supabaseClient"; // Import your configured Supabase client
+import RingLoaderComponent from "../RingLoader"; // Import RingLoaderComponent for loading animation
 
 const DEFAULT_IMAGE_URL = "https://via.placeholder.com/150"; // Placeholder image URL
 
@@ -9,6 +9,7 @@ const Home = () => {
   const [menuItems, setMenuItems] = useState([]); // Menu items fetched from Supabase
   const [loading, setLoading] = useState(true); // Loading state
   const [selectedDish, setSelectedDish] = useState(null); // State to store the selected dish for comparison
+  const [cart, setCart] = useState([]); // Cart state
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,14 +41,10 @@ const Home = () => {
     setSearchQuery(query);
   };
 
-  // Extract unique restaurant names
-  const restaurantNames = [
-    ...new Set(menuItems.map((item) => item.hostel_name)), // Set to get unique values
-  ];
-
-  const filteredMenuItems = menuItems.filter((item) =>
-    item.dish_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleAddToCart = (item) => {
+    setCart((prevCart) => [...prevCart, item]); // Add the item to the cart
+    alert(`${item.dishName} added to cart!`); // Show confirmation (optional)
+  };
 
   const handleCompareClick = (dish) => {
     setSelectedDish(dish); // Set the selected dish for comparison
@@ -57,18 +54,30 @@ const Home = () => {
     setSelectedDish(null); // Close the comparison
   };
 
+  const restaurantNames = [
+    ...new Set(menuItems.map((item) => item.hostel_name)), // Get unique restaurant names
+  ];
+
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.dish_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return <RingLoaderComponent loading={loading} />;
   }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center"><span className="text-green-500">Foodie</span> Finder</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        <span className="text-green-500">Foodie</span> Finder
+      </h1>
       <SearchBar onSearch={handleSearch} />
 
       {/* Restaurant Cards */}
       <div className="mt-4">
-        <h2 className="text-xl font-semibold mb-2"><span className="text-green-500">Resta</span>urants</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          <span className="text-green-500">Resta</span>urants
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {restaurantNames.map((restaurantName, index) => (
             <RestaurantCard
@@ -76,7 +85,7 @@ const Home = () => {
               name={restaurantName}
               menuItems={menuItems.filter(
                 (item) => item.hostel_name === restaurantName
-              )} // Filter menu items by restaurant name
+              )}
             />
           ))}
         </div>
@@ -84,7 +93,9 @@ const Home = () => {
 
       {/* Menu Items */}
       <div className="mt-4">
-        <h2 className="text-xl font-semibold mb-2"><span className="text-green-500">Menu</span> Items</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          <span className="text-green-500">Menu</span> Items
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMenuItems.map((item) => (
             <FoodCard
@@ -97,85 +108,100 @@ const Home = () => {
               priceOwnWebsite={item.price_own_website}
               additionalDetails={item.additional_details}
               restaurant={item.hostel_name || "Unknown Restaurant"}
-              imageUrl={item.image_url || DEFAULT_IMAGE_URL} // Use the image_url from Supabase
-              onCompareClick={handleCompareClick} // Pass the compare click handler
+              imageUrl={item.image_url || DEFAULT_IMAGE_URL}
+              onCompareClick={handleCompareClick}
+              onAddToCart={handleAddToCart} // Pass the add to cart handler
             />
           ))}
         </div>
       </div>
 
-      {/* Comparison Modal */}
-      {selectedDish && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg max-w-3xl w-full flex">
-      {/* Left Section: Image */}
-      <div className="flex-shrink-0 w-1/3">
-        {selectedDish.imageUrl ? (
-          <img
-            src={selectedDish.imageUrl}
-            alt={selectedDish.dishName}
-            className="w-full h-auto rounded-lg object-cover"
-          />
+      {/* Cart Section */}
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold mb-2">Cart</h2>
+        {cart.length === 0 ? (
+          <p>Your cart is empty.</p>
         ) : (
-          <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
-            No Image Available
-          </div>
+          <ul>
+            {cart.map((item, index) => (
+              <li key={index} className="border-b py-2">
+                {item.dishName} - ₹{item.price_own_website}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
-      {/* Right Section: Details */}
-      <div className="ml-6 flex-1">
-        <h3 className="text-2xl font-bold mb-4">{selectedDish.dishName}</h3>
-        <p className="mb-2">
-          <strong>Restaurant:</strong> {selectedDish.hostel_name || "Unknown"}
-        </p>
-        <div className="mb-4">
-          {selectedDish.price_original && (
-            <p>
-              <strong>Original Price:</strong> ₹{selectedDish.price_original}
-            </p>
-          )}
-          {selectedDish.price_zomato && (
-            <p>
-              <strong>Zomato Price:</strong> ₹{selectedDish.price_zomato}
-            </p>
-          )}
-          {selectedDish.price_swiggy && (
-            <p>
-              <strong>Swiggy Price:</strong> ₹{selectedDish.price_swiggy}
-            </p>
-          )}
-          {selectedDish.price_own_website && (
-            <p>
-              <strong>Own Website Price:</strong> ₹{selectedDish.price_own_website}
-            </p>
-          )}
+      {/* Comparison Modal */}
+      {selectedDish && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-3xl w-full flex">
+            <div className="flex-shrink-0 w-1/3">
+              {selectedDish.imageUrl ? (
+                <img
+                  src={selectedDish.imageUrl}
+                  alt={selectedDish.dishName}
+                  className="w-full h-auto rounded-lg object-cover"
+                />
+              ) : (
+                <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                  No Image Available
+                </div>
+              )}
+            </div>
+
+            <div className="ml-6 flex-1">
+              <h3 className="text-2xl font-bold mb-4">{selectedDish.dishName}</h3>
+              <p className="mb-2">
+                <strong>Restaurant:</strong> {selectedDish.hostel_name || "Unknown"}
+              </p>
+              <div className="mb-4">
+                {selectedDish.price_original && (
+                  <p>
+                    <strong>Original Price:</strong> ₹{selectedDish.price_original}
+                  </p>
+                )}
+                {selectedDish.price_zomato && (
+                  <p>
+                    <strong>Zomato Price:</strong> ₹{selectedDish.price_zomato}
+                  </p>
+                )}
+                {selectedDish.price_swiggy && (
+                  <p>
+                    <strong>Swiggy Price:</strong> ₹{selectedDish.price_swiggy}
+                  </p>
+                )}
+                {selectedDish.price_own_website && (
+                  <p>
+                    <strong>Own Website Price:</strong> ₹{selectedDish.price_own_website}
+                  </p>
+                )}
+              </div>
+              <button
+                className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 absolute top-2 right-2"
+                onClick={closeComparison}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <button
-          className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 absolute top-2 right-2"
-          onClick={closeComparison}
-        >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="w-6 h-6 text-white"
-        >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-      </button>
-      </div>
+      )}
     </div>
-  </div>
-)}
-</div>
-);
+  );
 };
 
 const SearchBar = ({ onSearch }) => {
@@ -207,17 +233,14 @@ const RestaurantCard = ({ name, menuItems }) => {
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden relative">
-      {/* Image Section */}
       <div className="w-full h-40 bg-gray-200">
         <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
       </div>
 
-      {/* Offer Banner */}
       <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
         {offer}
       </div>
 
-      {/* Content Section */}
       <div className="p-4">
         <h3 className="text-lg font-bold">{name}</h3>
         <div className="flex items-center text-sm text-gray-600 mt-2">
@@ -232,7 +255,6 @@ const RestaurantCard = ({ name, menuItems }) => {
   );
 };
 
-
 const FoodCard = ({
   dishName,
   category,
@@ -242,11 +264,11 @@ const FoodCard = ({
   additionalDetails,
   restaurant,
   imageUrl,
-  onCompareClick, // Added compare click handler
+  onCompareClick,
+  onAddToCart, // Add this prop for cart functionality
 }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-4 relative">
-      {/* Image Section */}
       <div className="w-full h-40 bg-gray-200 rounded-t-lg overflow-hidden">
         <img
           src={imageUrl}
@@ -255,7 +277,6 @@ const FoodCard = ({
         />
       </div>
 
-      {/* Content Section */}
       <div className="mt-4">
         <h3 className="text-lg font-bold">{dishName}</h3>
         <p className="text-sm text-gray-600">{category}</p>
@@ -275,10 +296,24 @@ const FoodCard = ({
               price_zomato: priceZomato,
               price_swiggy: priceSwiggy,
               price_own_website: priceOwnWebsite,
+              imageUrl,
             })
           }
         >
           Compare Prices
+        </button>
+        <button
+          className="mt-4 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 ml-2"
+          onClick={() =>
+            onAddToCart({
+              dishName,
+              hostel_name: restaurant,
+              price_own_website: priceOwnWebsite,
+              imageUrl,
+            })
+          }
+        >
+          Add to Cart
         </button>
       </div>
     </div>

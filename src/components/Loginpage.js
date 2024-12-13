@@ -43,7 +43,7 @@ const LoginPage = ({ closeLogin }) => {
       resetForm();
 
       // Redirect to home page or dashboard
-      navigate("/");
+      navigate("/main");
     } catch (err) {
       console.error("Unexpected error during login:", err);
     }

@@ -6,14 +6,15 @@ import './App.css';
 // Importing components
 import MainSection from './components/MainSection';
 import AboutUs from './components/AboutUs'; // Import the About Us component
-import HowItWorks from './components/HowItWorks';
-import Footer from './components/Footer';
+
+import Footer from './components/heads/Footer';
 import Loginpage from './components/Loginpage';
 
 import Contact from './components/Contact';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Home from './components/Home';
+import Header from './components/heads/Header';
+
+import Hero from './components/home/Hero';
+import Home from './components/home/Home';
 
 // Importing UserProvider
 import { UserProvider } from './components/UserContext'; // UserProvider for shared authentication state
@@ -25,7 +26,7 @@ function App() {
         <div className="App">
           <Routes>
             {/* Main page (Home) route */}
-            <Route path="/" element={<><Header/><MainSection /><HowItWorks /><AboutUs/><Footer/></>} />
+            <Route path="/" element={<><Header/><MainSection /><AboutUs/><Footer/></>} />
             
             {/* About Us page route */}
             <Route path="/about" element={<><Header/><AboutUs /></>} />
