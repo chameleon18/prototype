@@ -11,36 +11,30 @@ const DEFAULT_IMAGE_URL = "https://via.placeholder.com/150";
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuItems, setMenuItems] = useState([]); // Ensure menuItems is initialized as an empty array
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedDish, setSelectedDish] = useState(null);
   const { cart = [], addToCart } = useCart(); // Ensure cart is an empty array if undefined
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // Set loading to true before making the API call
 
-        const timer = setTimeout(async () => {
-          const { data: menuData, error: menuError } = await supabase
-            .from("menu_items")
-            .select("*");
+        const { data: menuData, error: menuError } = await supabase
+          .from("menu_items")
+          .select("*");
 
-          if (menuError) throw menuError;
-          setMenuItems(menuData || []); // Ensure menuData is handled safely
-          setLoading(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
+        if (menuError) throw menuError;
+        setMenuItems(menuData || []); // Ensure menuData is handled safely
       } catch (error) {
         console.error("Error fetching data:", error.message);
-        setLoading(false);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false once the data is fetched or error occurs
       }
     };
 
     fetchData();
-  }, []);
+  }, []); // Empty dependency array means this runs only once when the component mounts
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -67,7 +61,7 @@ const Home = () => {
   ) || [];
 
   if (loading) {
-    return <RingLoaderComponent loading={loading} />;
+    return <RingLoaderComponent loading={loading} />; // Show the loader component while loading
   }
 
   return (

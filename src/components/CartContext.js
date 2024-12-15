@@ -9,7 +9,18 @@ export const CartProvider = ({ children }) => {
 
   // Add item to the cart
   const addToCart = (item) => {
-    setCartItems((prevItems) => [...prevItems, item]);
+    setCartItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex((i) => i.id === item.id);
+      if (existingItemIndex > -1) {
+        // If item already exists, update quantity
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex].quantity += 1;
+        return updatedItems;
+      } else {
+        // If it's a new item, add it to the cart
+        return [...prevItems, item];
+      }
+    });
   };
 
   // Remove item from the cart
@@ -17,13 +28,22 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => prevItems.filter(item => item.id !== itemId));
   };
 
-  // Clear the cart
+  // Update quantity of an item
+  const updateQuantity = (itemId, newQuantity) => {
+    setCartItems((prevItems) => 
+      prevItems.map((item) => 
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  // Clear the entire cart
   const clearCart = () => {
-    setCartItems([]);
+    setCartItems([]); // Resets cart to empty
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
