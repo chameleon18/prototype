@@ -18,9 +18,12 @@ import Home from './components/home/Home';
 
 // Importing UserProvider
 import { UserProvider } from './components/UserContext'; // UserProvider for shared authentication state
+import { CartProvider } from './components/CartContext';
+import Cart from './components/Cart';
 
 function App() {
   return (
+    <CartProvider>
     <UserProvider>  {/* Wrap the entire app with UserProvider */}
       <Router>
         <div className="App">
@@ -35,10 +38,12 @@ function App() {
 
             {/* Main section and hero section */}
             <Route path='/main' element={<><Header/><Hero/><Home/><Footer/></> } />
+            <Route path='/cart' element={<><Header/><Cart/><Footer/></>}/>
           </Routes>
         </div>
       </Router>
     </UserProvider>  
+    </CartProvider>
   );
 }
 

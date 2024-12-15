@@ -54,14 +54,15 @@ function Header() {
 
         {/* Conditionally render Cart Button only on /main route */}
         {location.pathname === "/main" && (
-          <Link to="/cart" className="flex items-center space-x-2 bg-primary-dark py-2 px-4 rounded text-white relative">
-            <FaShoppingCart size={20} /> {/* Cart Icon */}
-            {cartItems && cartItems.length > 0 && (
-              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-2">
-                {cartItems.length}
-              </span>
-            )}
-          </Link>
+          <Link to="/cart" className="relative">
+          <FaShoppingCart size={20} />
+          {cartItems.length > 0 && (
+            <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-2">
+              {cartItems.length} {/* Display the cart item count */}
+            </span>
+          )}
+          Cart
+        </Link>
         )}
 
         {/* User Dropdown */}
