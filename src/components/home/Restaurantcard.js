@@ -11,7 +11,7 @@ const RestaurantCard = ({ name, menuItems }) => {
         className="w-full h-40 object-cover rounded-md"
       />
       <h3 className="text-xl font-semibold mt-2">{name}</h3>
-      <p className="text-gray-600">4.3⭐</p>
+      <p className="text-gray-600">4.5⭐</p>
     </div>
   );
 };
